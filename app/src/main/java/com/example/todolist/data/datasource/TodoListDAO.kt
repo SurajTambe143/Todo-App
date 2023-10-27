@@ -1,4 +1,4 @@
-package com.example.todolist.presentation
+package com.example.todolist.data.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.todolist.domain.model.TodoList
 
 
 @Dao
@@ -22,6 +23,6 @@ interface TodoListDAO {
     suspend fun updateTodo(todoList: TodoList)
 
     @Query("SELECT * FROM todo")
-    fun getTodos() : LiveData<List<TodoList>>
+    suspend fun getTodos() : List<TodoList>
 
 }

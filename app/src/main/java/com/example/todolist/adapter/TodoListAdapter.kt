@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
-import com.example.todolist.presentation.TodoList
+import com.example.todolist.domain.model.TodoList
 
 class TodoListAdapter(val remove: (TodoList) -> Unit): RecyclerView.Adapter<TodoListAdapter.TodoViewHolder>() {
 

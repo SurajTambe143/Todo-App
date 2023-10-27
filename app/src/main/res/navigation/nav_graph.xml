@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.todolist.presentation.MainFragment"
+        android:name="com.example.todolist.presentation.ui.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/inputFragment"
-        android:name="com.example.todolist.presentation.InputFragment"
+        android:name="com.example.todolist.presentation.ui.InputFragment"
         android:label="fragment_input"
         tools:layout="@layout/fragment_input" >
         <action

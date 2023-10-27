@@ -1,33 +1,30 @@
-package com.example.todolist.presentation
+package com.example.todolist.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.todolist.R
 import com.example.todolist.adapter.TodoListAdapter
-import com.example.todolist.databinding.FragmentInputBinding
+import com.example.todolist.data.datasource.TodoDatabase
 import com.example.todolist.databinding.FragmentMainBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.todolist.data.repositoryimpl.TodoRepositoryImpl
+import com.example.todolist.presentation.viewmodel.MainViewModel
+import com.example.todolist.presentation.viewmodel.MainViewModelFactory
 
 class MainFragment : Fragment() {
 
+
+    lateinit var mainViewModel: MainViewModel
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val adapter=TodoListAdapter(){
-        lifecycleScope.launch(Dispatchers.IO) {
-            TodoDatabase.getDatabase(requireContext()).todoListDao().deleteTodo(it)
-        }
+            mainViewModel.deleteTodo(it)
     }
 
     override fun onCreateView(
@@ -45,15 +42,28 @@ class MainFragment : Fragment() {
         binding.mainRv.layoutManager= StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL)
         binding.mainRv.adapter=adapter
 
-        TodoDatabase.getDatabase(requireContext()).todoListDao().getTodos()
-            .observe(requireActivity(), Observer {
-                Log.e("Check", it.toString())
-                adapter.updateList(it)
-            })
+        setupViewModel()
+        setUpUI()
 
+    }
+
+    private fun setUpUI() {
         binding.fbtnNewInput.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_inputFragment)
         }
+    }
 
+    private fun setupViewModel() {
+        val todoDatabase = TodoDatabase.getDatabase(requireContext())
+        val repository = TodoRepositoryImpl(todoDatabase)
+
+        mainViewModel =
+            ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+
+        mainViewModel.getTodos()
+
+        mainViewModel.songs.observe(requireActivity()){
+            adapter.updateList(it)
+        }
     }
 }
