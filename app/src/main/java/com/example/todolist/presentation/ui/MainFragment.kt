@@ -1,5 +1,6 @@
 package com.example.todolist.presentation.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,22 +11,29 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.todolist.R
+import com.example.todolist.TodoApplication
 import com.example.todolist.adapter.TodoListAdapter
 import com.example.todolist.data.datasource.TodoDatabase
 import com.example.todolist.databinding.FragmentMainBinding
 import com.example.todolist.data.repositoryimpl.TodoRepositoryImpl
 import com.example.todolist.presentation.viewmodel.MainViewModel
 import com.example.todolist.presentation.viewmodel.MainViewModelFactory
+import javax.inject.Inject
 
 class MainFragment : Fragment() {
 
 
     lateinit var mainViewModel: MainViewModel
+
+    @Inject
+    lateinit var mainViewModelFactory: MainViewModelFactory
+
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val adapter=TodoListAdapter(){
             mainViewModel.deleteTodo(it)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +41,13 @@ class MainFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as TodoApplication).applicationComponent.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,11 +68,11 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val todoDatabase = TodoDatabase.getDatabase(requireContext())
-        val repository = TodoRepositoryImpl(todoDatabase)
+//        val todoDatabase = TodoDatabase.getDatabase(requireContext())
+//        val repository = TodoRepositoryImpl(todoDatabase)
 
         mainViewModel =
-            ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+            ViewModelProvider(this, mainViewModelFactory).get(MainViewModel::class.java)
 
         mainViewModel.getTodos()
 

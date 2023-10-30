@@ -8,8 +8,9 @@ import com.example.todolist.domain.model.TodoList
 import com.example.todolist.data.repositoryimpl.TodoRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(val repository: TodoRepositoryImpl):ViewModel() {
+class MainViewModel @Inject constructor (val repository: TodoRepositoryImpl):ViewModel() {
 
     private val todoLiveData = MutableLiveData<List<TodoList>>()
 
