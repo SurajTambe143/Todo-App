@@ -22,5 +22,10 @@
         <action
             android:id="@+id/action_inputFragment_to_mainFragment"
             app:popUpTo="@id/mainFragment" />
+        <argument
+            android:name="inputData"
+            app:nullable="true"
+            app:argType="com.example.todolist.domain.model.TodoList"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

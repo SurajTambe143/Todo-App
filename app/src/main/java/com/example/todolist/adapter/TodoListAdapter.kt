@@ -13,6 +13,7 @@ import com.example.todolist.domain.model.TodoList
 class TodoListAdapter(val remove: (TodoList) -> Unit): RecyclerView.Adapter<TodoListAdapter.TodoViewHolder>() {
 
     private  var _list: List<TodoList> = emptyList()
+    var onItemClick : ((TodoList)->Unit)? =null
 
     class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title =itemView.findViewById<TextView>(R.id.cv_title)
@@ -42,7 +43,7 @@ class TodoListAdapter(val remove: (TodoList) -> Unit): RecyclerView.Adapter<Todo
             remove.invoke(_list[position])
         }
         holder.cv.setOnClickListener {
-            remove.invoke(_list[position])
+            onItemClick?.invoke(_list[position])
         }
     }
 }

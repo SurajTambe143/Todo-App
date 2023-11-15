@@ -19,4 +19,8 @@ class TodoRepositoryImpl @Inject constructor (val database: TodoDatabase): TodoR
         database.todoListDao().deleteTodo(todoList)
     }
 
+    suspend fun updateTodo(todoList: TodoList){
+        database.todoListDao().updateTodo(todoList)
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.todolist.presentation.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,8 +31,10 @@ class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    private val adapter=TodoListAdapter(){
-            mainViewModel.deleteTodo(it)
+    private val adapter = TodoListAdapter() {
+        mainViewModel.deleteTodo(it)
+        //observeViewModel()
+        mainViewModel.getTodos()
     }
 
 
@@ -53,9 +56,12 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.mainRv.layoutManager= StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL)
-        binding.mainRv.adapter=adapter
-
+        binding.mainRv.layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        binding.mainRv.adapter = adapter
+        adapter.onItemClick = {
+            val action = MainFragmentDirections.actionMainFragmentToInputFragment(it)
+            findNavController().navigate(action)
+        }
         setupViewModel()
         setUpUI()
 
@@ -63,6 +69,7 @@ class MainFragment : Fragment() {
 
     private fun setUpUI() {
         binding.fbtnNewInput.setOnClickListener {
+            // val action=MainFragmentDirections.actionMainFragmentToInputFragment(null)
             findNavController().navigate(R.id.action_mainFragment_to_inputFragment)
         }
     }
@@ -76,8 +83,13 @@ class MainFragment : Fragment() {
 
         mainViewModel.getTodos()
 
-        mainViewModel.songs.observe(requireActivity()){
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        mainViewModel.songs.observe(viewLifecycleOwner) {
             adapter.updateList(it)
+            Log.e("Test", it.toString())
         }
     }
 }
