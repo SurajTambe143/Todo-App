@@ -1,5 +1,6 @@
 package com.example.todolist.data.repositoryimpl
 
+import android.util.Log
 import com.example.todolist.data.datasource.TodoDatabase
 import com.example.todolist.domain.model.TodoList
 import com.example.todolist.domain.repository.TodoRepository
@@ -19,8 +20,10 @@ class TodoRepositoryImpl @Inject constructor (val database: TodoDatabase): TodoR
         database.todoListDao().deleteTodo(todoList)
     }
 
-    suspend fun updateTodo(todoList: TodoList){
-        database.todoListDao().updateTodo(todoList)
+    suspend fun updateTodo(todoList: TodoList,id:Int?){
+        Log.e("id Check", "updateTodo: having ID ${todoList.id} ", )
+        Log.e("id Check", "updateTodo: having ID $id ")
+        database.todoListDao().updateTodo(id,todoList.title,todoList.description)
     }
 
 }

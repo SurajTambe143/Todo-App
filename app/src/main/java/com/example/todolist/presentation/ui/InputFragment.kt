@@ -17,6 +17,7 @@ import com.example.todolist.domain.model.TodoList
 import com.example.todolist.data.repositoryimpl.TodoRepositoryImpl
 import com.example.todolist.presentation.viewmodel.MainViewModel
 import com.example.todolist.presentation.viewmodel.MainViewModelFactory
+import com.example.todolist.utils.Operation
 import com.google.android.material.snackbar.Snackbar
 
 class InputFragment : Fragment() {
@@ -26,22 +27,6 @@ class InputFragment : Fragment() {
 
     private val args: InputFragmentArgs by navArgs()
     private val binding get() = _binding!!
-//    private val adapter= TodoListAdapter(){
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            mainViewModel.updateTodo(it)
-//        }
-//    }
-
-//    private val adapter = TodoListAdapter(edit = {
-//             binding.title.setText(args.inputData.title)
-//            binding.description.setText(args.inputData.description)
-//            updateTodoList()
-//    }, remove = {
-//    })
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,32 +44,29 @@ class InputFragment : Fragment() {
 
 
     private fun setUpUI() {
-        args.inputData?.title?.let {
-            binding.title.setText(it)
-
-        }
-//        binding.description.setText(args.inputData.description)
-        binding.btnAdd.setOnClickListener {
-            val title = binding.title.editableText.toString()
-            val description = binding.txtDescription.editText!!.editableText.toString()
-            if ((title == "") && (description == "")) {
-                Snackbar.make(binding.root, "Please enter the given field", Snackbar.LENGTH_SHORT).show()
-            } else {
-                mainViewModel.insertTodo(TodoList(title, description))
-                findNavController().navigateUp()
-            }
+        updateTodoList()
+        binding.icBackArrow.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 
     private fun updateTodoList() {
-        binding.btnAdd.setOnClickListener {
-            val title = binding.title.editableText.toString()
-            val description = binding.txtDescription.editText!!.editableText.toString()
-            if ((title == "") && (description == "")) {
-                Snackbar.make(binding.root, "Please enter the given field", Snackbar.LENGTH_SHORT).show()
-            } else {
-                mainViewModel.updateTodo(TodoList(title, description))
-                findNavController().navigate(R.id.action_inputFragment_to_mainFragment)
+        args.todoOperation.let {
+            if (Operation.UPDATE==it){
+                args.inputData.let {
+                    Log.w("id Check", "updateTodoList: ${it?.id}" )
+                    val id=it?.id
+                    binding.title.setText(it?.title)
+                    binding.description.setText(it?.description)
+                    binding.btnAdd.setOnClickListener {
+                        addOrUpdateTodoOnClick(Select.UPDATE,id)
+                    }
+                }
+            }
+            if (Operation.ADD==it){
+                binding.btnAdd.setOnClickListener {
+                    addOrUpdateTodoOnClick(Select.ADD,0)
+                }
             }
         }
     }
@@ -92,8 +74,32 @@ class InputFragment : Fragment() {
     private fun setupViewModel() {
         val todoDatabase = TodoDatabase.getDatabase(requireContext())
         val repository = TodoRepositoryImpl(todoDatabase)
-
         mainViewModel =
             ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+    }
+
+    private fun addOrUpdateTodoOnClick(select: Select,id:Int?) {
+        val title = binding.title.editableText.toString()
+        val description = binding.description.editableText!!.toString()
+        if ((title == "") && (description == "")) {
+            Snackbar.make(binding.root, "Please enter the given field", Snackbar.LENGTH_SHORT)
+                .show()
+        } else {
+            when (select) {
+                Select.ADD -> {
+                    Log.w("Add", "SELECT.ADD is Called")
+                    mainViewModel.insertTodo(TodoList(title, description))
+                }
+                Select.UPDATE -> {
+                    Log.w("Update","SELECT.Update Is called $title and $description" )
+                    mainViewModel.updateTodo(TodoList(title, description),id)
+                }
+            }
+            findNavController().navigateUp()
+        }
+    }
+
+    enum class Select {
+        ADD, UPDATE
     }
 }

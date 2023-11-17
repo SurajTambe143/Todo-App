@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_mainFragment_to_inputFragment"
-            app:destination="@id/inputFragment" />
+            app:destination="@id/inputFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/inputFragment"
@@ -21,11 +25,19 @@
         tools:layout="@layout/fragment_input" >
         <action
             android:id="@+id/action_inputFragment_to_mainFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left"
             app:popUpTo="@id/mainFragment" />
         <argument
             android:name="inputData"
             app:nullable="true"
             app:argType="com.example.todolist.domain.model.TodoList"
             android:defaultValue="@null" />
+        <argument
+            android:name="todoOperation"
+            app:argType="com.example.todolist.utils.Operation"
+            android:defaultValue="ADD" />
     </fragment>
 </navigation>

@@ -19,6 +19,7 @@ import com.example.todolist.databinding.FragmentMainBinding
 import com.example.todolist.data.repositoryimpl.TodoRepositoryImpl
 import com.example.todolist.presentation.viewmodel.MainViewModel
 import com.example.todolist.presentation.viewmodel.MainViewModelFactory
+import com.example.todolist.utils.Operation
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -59,7 +60,7 @@ class MainFragment : Fragment() {
         binding.mainRv.layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         binding.mainRv.adapter = adapter
         adapter.onItemClick = {
-            val action = MainFragmentDirections.actionMainFragmentToInputFragment(it)
+            val action = MainFragmentDirections.actionMainFragmentToInputFragment(it,Operation.UPDATE)
             findNavController().navigate(action)
         }
         setupViewModel()

@@ -35,9 +35,9 @@ class MainViewModel @Inject constructor (val repository: TodoRepositoryImpl):Vie
         }
     }
 
-    fun updateTodo(todoList: TodoList){
+    fun updateTodo(todoList: TodoList,id:Int?){
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateTodo(todoList)
+            repository.updateTodo(todoList,id)
         }
     }
 

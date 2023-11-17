@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.ActivityNavigator
 import androidx.navigation.findNavController
 import com.example.todolist.R
 import com.example.todolist.TodoApplication
@@ -28,5 +29,10 @@ class MainActivity : AppCompatActivity() {
         (application as TodoApplication).applicationComponent.inject(this)
         mainViewModel= ViewModelProvider(this,mainViewModelFactory).get(MainViewModel::class.java)
 
+    }
+
+    override fun finish() {
+        super.finish()
+        ActivityNavigator.applyPopAnimationsToPendingTransition(this)
     }
 }

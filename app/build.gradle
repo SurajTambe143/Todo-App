@@ -89,5 +89,5 @@ dependencies {
 //    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 //
     //color picker library
-    implementation 'com.thebluealliance:spectrum:0.7.1'
+//    implementation 'com.thebluealliance:spectrum:0.7.1'
 }
